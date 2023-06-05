@@ -20,5 +20,4 @@ class CommonSignupForm(SignupForm):
         user = super(CommonSignupForm, self).save(request)
         common_group = Group.objects.get(name='common')
         common_group.user_set.add(user)
-        common_group.save()
         return user

@@ -1,5 +1,5 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core.paginator import Paginator
 from .models import Post
 from .filters import PostFilter
@@ -43,12 +43,14 @@ class PostSearch(ListView):
         return context
 
 
-class PostCreate(LoginRequiredMixin, CreateView):
+class PostCreate(PermissionRequiredMixin, CreateView):
+    permission_required = ('newspaperapp.add_post',)
     template_name = 'post_create.html'
     form_class = PostForm
 
 
-class PostEdit(LoginRequiredMixin, UpdateView):
+class PostEdit(PermissionRequiredMixin, UpdateView):
+    permission_required = ('newspaperapp.change_post',)
     template_name = 'post_edit.html'
     form_class = PostForm
 
@@ -57,7 +59,8 @@ class PostEdit(LoginRequiredMixin, UpdateView):
         return Post.objects.get(pk=id)
 
 
-class PostDelete(DeleteView):
+class PostDelete(PermissionRequiredMixin, DeleteView):
+    permission_required = ('newspaperapp.delete_post',)
     template_name = 'post_delete.html'
     queryset = Post.objects.all()
     success_url = '/news/'
